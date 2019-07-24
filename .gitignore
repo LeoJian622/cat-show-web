@@ -16,7 +16,6 @@ target/
 ### IntelliJ IDEA ###
 .idea
 *.iws
-*.iml
 *.ipr
 
 ### NetBeans ###
@@ -29,3 +28,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/application-wechat.yml
+/src/main/resources/application-database.yml
