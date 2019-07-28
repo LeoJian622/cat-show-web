@@ -9,13 +9,13 @@ import lombok.Data;
  */
 
 @Data
-public class WeChatAuthReturnDTO {
+public class WeChatAuthReturnDTO{
 
     private String openid;
 
     private String sessionKey;
 
-    private String unionid;
+    private String unionId;
 
     private int errcode;
 

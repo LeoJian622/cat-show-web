@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
 
+/**
+ * @author liyongjian
+ * @date 2019-7-28 00:51:09
+ */
 @SpringBootApplication
 @MapperScan(value = "xyz.foolcat.mapper")
 @EnableConfigurationProperties({WeChatAuthenticateConfig.class})

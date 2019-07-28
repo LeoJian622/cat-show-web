@@ -19,4 +19,5 @@ public class WeChatAuthenticateConfig {
 
     private String appSecret;
 
+    private String apiUrl;
 }
