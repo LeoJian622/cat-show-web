@@ -11,6 +11,7 @@ public class FoolCatSpringApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }
