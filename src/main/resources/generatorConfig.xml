@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+        "https//mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
 
@@ -15,7 +15,7 @@
                 driverClass="com.mysql.cj.jdbc.Driver"
                 connectionURL="jdbc:mysql://39.108.146.155:3306/foolcat"
                 userId="foolcat"
-                password=""/>
+                password="FoolCat.2333.yjY"/>
 
         <javaModelGenerator targetPackage="xyz.foolcat.model"
                             targetProject="./src/main/java">
