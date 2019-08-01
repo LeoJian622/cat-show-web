@@ -1,17 +1,11 @@
 package xyz.foolcat.utils;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.Arrays;
 
 /**
  * AES数据加解密工具类
@@ -22,66 +16,37 @@ import java.util.Arrays;
  */
 public class AesEncryptUtils {
 
-    // 算法名称
-    final String KEY_ALGORITHM = "AES";
+    /**
+     * 算法名称
+     */
+    private static final String KEY_ALGORITHM = "AES";
 
-    // 加解密算法/模式/填充方式
-    final String algorithmStr = "AES/CBC/PKCS7Padding";
+    /**
+     * 加解密算法/模式/填充方式
+     */
+    private static final String ALGORITHM = "AES/CBC/NoPadding";
 
-    private Key key;
-    private Cipher cipher;
-
-    public void init(byte[] keyBytes) {
-
-        // 如果密钥不足16位，那么就补足. 这个if 中的内容很重要
-        int base = 16;
-        if (keyBytes.length % base != 0) {
-            int groups = keyBytes.length / base + (keyBytes.length % base != 0 ? 1 : 0);
-            byte[] temp = new byte[groups * base];
-            Arrays.fill(temp, (byte) 0);
-            System.arraycopy(keyBytes, 0, temp, 0, keyBytes.length);
-            keyBytes = temp;
-        }
-        // 初始化
-        Security.addProvider(new BouncyCastleProvider());
-        // 转化成JAVA的密钥格式
-        key = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
-        try {
-            // 初始化cipher
-            cipher = Cipher.getInstance(algorithmStr);
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 解密方法
      *
-     * @param encryptedDataStr
-     *            要解密的字符串
-     * @param keyBytesStr
-     *            解密密钥
-     * @return
+     * @param encryptedDataStr 要解密的字符串
+     * @param keyBytesStr      解密密钥
+     * @return encryptedText   解密后的字符串
      */
-    public byte[] decrypt(String encryptedDataStr, String keyBytesStr, String ivStr) {
+    public static byte[] decrypt(String encryptedDataStr, String keyBytesStr, String ivStr) {
         byte[] encryptedText = null;
-        byte[] encryptedData = null;
-        byte[] sessionkey = null;
-        byte[] iv = null;
-
         try {
-            sessionkey = Base64.decodeBase64(keyBytesStr);
-            encryptedData = Base64.decodeBase64(encryptedDataStr);
-            iv = Base64.decodeBase64(ivStr);
+            byte[] sessionKeyDecodeBase64 = Base64.decodeBase64(keyBytesStr);
+            byte[] encryptedDataDecodeBase64 = Base64.decodeBase64(encryptedDataStr);
+            byte[] ivDecodeBase64 = Base64.decodeBase64(ivStr);
 
-            init(sessionkey);
+            SecretKey secretKey = new SecretKeySpec(sessionKeyDecodeBase64, KEY_ALGORITHM);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(ivDecodeBase64);
 
-            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-            encryptedText = cipher.doFinal(encryptedData);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            encryptedText = cipher.doFinal(encryptedDataDecodeBase64);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -89,13 +54,20 @@ public class AesEncryptUtils {
         return encryptedText;
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        AesEncryptUtils d = new AesEncryptUtils();
-        String content = "CNtSo3kCTxYoaxdhxzmVN/CvIJK41+1DOTZcrXUVMd9+5Z8jTDvbn6kExXRzH+EqWD6oyXwxUzYsW5nyZ7hGAx4pqYylJUzshx+R9DrpQ7HAb5ScH1e0zk//UAiD11W19uFo2/nYyx5ug99jCj6YOgicpfNHSatqkLVRryQlDEzNyaEuo/84uHIpxwC7t8yqmuwUtW2qedtJxWmYWOC1ZQ==";
-        String key = "9QJPlP2TyuDFH1A73pnGqg==";
-        String iv = "SABdIDCax6u7H0f6OILGzw==";
-        byte[] result = d.decrypt(content, key, iv);
-        System.out.println(new String(result,"UTF-8"));
+    /**
+     * PKCS7Padding 数据填充
+     *
+     * @param data  需要加密的字符串
+     * @return      进行PKCS7Padding填充后的明文字符串
+     */
+    public static String pkcs7padding(String data) {
+        int blockLength = 16;
+        int padding = blockLength - (data.length() % blockLength);
+        String paddingText = "";
+        for (int i = 0; i < padding; i++) {
+            paddingText += (char)padding;
+        }
+        return data+paddingText;
     }
 
 }
