@@ -15,7 +15,7 @@
                 driverClass="com.mysql.cj.jdbc.Driver"
                 connectionURL="jdbc:mysql://39.108.146.155:3306/foolcat"
                 userId="foolcat"
-                password="FoolCat.2333.yjY"/>
+                password=""/>
 
         <javaModelGenerator targetPackage="xyz.foolcat.model"
                             targetProject="./src/main/java">
