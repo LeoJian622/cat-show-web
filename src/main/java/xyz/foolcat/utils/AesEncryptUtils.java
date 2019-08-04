@@ -54,20 +54,4 @@ public class AesEncryptUtils {
         return encryptedText;
     }
 
-    /**
-     * PKCS7Padding 数据填充
-     *
-     * @param data  需要加密的字符串
-     * @return      进行PKCS7Padding填充后的明文字符串
-     */
-    public static String pkcs7padding(String data) {
-        int blockLength = 16;
-        int padding = blockLength - (data.length() % blockLength);
-        String paddingText = "";
-        for (int i = 0; i < padding; i++) {
-            paddingText += (char)padding;
-        }
-        return data+paddingText;
-    }
-
 }

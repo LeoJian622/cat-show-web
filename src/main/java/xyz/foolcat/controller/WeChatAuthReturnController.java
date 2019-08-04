@@ -3,12 +3,11 @@ package xyz.foolcat.controller;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
+import xyz.foolcat.dto.WeChatAuthDTO;
 import xyz.foolcat.dto.WeChatAuthReturnDTO;
 
 import java.net.URI;
@@ -30,14 +29,21 @@ public class WeChatAuthReturnController {
     @Autowired
     RestTemplate restTemplate;
 
-    @RequestMapping(value = "/auth/{code}")
-    public Map authenticate(@PathVariable String code) throws Exception {
+    @RequestMapping(value = "/auth/{code}",method = RequestMethod.POST)
+    public WeChatAuthReturnDTO authenticate(@PathVariable String code) throws Exception {
         URI url = UriComponentsBuilder.fromUriString(weChatAuthenticateConfig.getApiUrl()
                 + "/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code")
                 .build(weChatAuthenticateConfig.getAppId(), weChatAuthenticateConfig.getAppSecret(), code);
 
       ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         WeChatAuthReturnDTO weChatAuthReturnDTO = JSON.parseObject(responseEntity.getBody(), WeChatAuthReturnDTO.class);
-        return null;
+        System.out.println(responseEntity.getBody());
+        return weChatAuthReturnDTO;
+    }
+
+    @RequestMapping(value = "/auth",method = RequestMethod.POST)
+    public String authenticate(@RequestBody WeChatAuthDTO weChatAuthDTO) throws Exception{
+
+        return "1";
     }
 }
