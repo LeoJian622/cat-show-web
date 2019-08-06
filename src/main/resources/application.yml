@@ -1,18 +1,3 @@
-server:
-  port: 8090
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/springbucks?useUnicode=true&characterEncoding=utf8
-    username: springbucks
-    password: springbucks
-    druid:
-      filter:
-        wall:
-          enabled: true
-          db-type: mysql
-          config:
-            delete-allow: false
-            drop-table-allow: false
+  profiles:
+    active: database,wechat
