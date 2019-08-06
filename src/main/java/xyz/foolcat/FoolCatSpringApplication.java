@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
 
 /**
@@ -13,6 +14,7 @@ import xyz.foolcat.config.WeChatAuthenticateConfig;
 @SpringBootApplication
 @MapperScan(value = "xyz.foolcat.mapper")
 @EnableConfigurationProperties({WeChatAuthenticateConfig.class})
+@EnableCaching
 public class FoolCatSpringApplication {
 
 	public static void main(String[] args) {

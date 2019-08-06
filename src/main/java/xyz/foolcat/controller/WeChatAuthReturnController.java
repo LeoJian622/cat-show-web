@@ -2,6 +2,7 @@ package xyz.foolcat.controller;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +30,10 @@ public class WeChatAuthReturnController {
     @Autowired
     RestTemplate restTemplate;
 
-    @RequestMapping(value = "/auth/{code}",method = RequestMethod.POST)
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @RequestMapping(value = "/auth/{code}")
     public WeChatAuthReturnDTO authenticate(@PathVariable String code) throws Exception {
         URI url = UriComponentsBuilder.fromUriString(weChatAuthenticateConfig.getApiUrl()
                 + "/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code")
@@ -38,6 +42,7 @@ public class WeChatAuthReturnController {
       ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         WeChatAuthReturnDTO weChatAuthReturnDTO = JSON.parseObject(responseEntity.getBody(), WeChatAuthReturnDTO.class);
         System.out.println(responseEntity.getBody());
+        redisTemplate.opsForValue().set(weChatAuthReturnDTO.getOpenid(),weChatAuthReturnDTO.getSessionKey());
         return weChatAuthReturnDTO;
     }
 
