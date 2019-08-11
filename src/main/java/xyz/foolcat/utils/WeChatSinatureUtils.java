@@ -41,7 +41,7 @@ public class WeChatSinatureUtils {
         String md5Data = null;
         try {
             String checkString = rawData + salt;
-            md5Data = new String(DigestUtils.md5(checkString));
+            md5Data = DigestUtils.md5Hex(checkString);
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();

@@ -2,6 +2,8 @@ package xyz.foolcat.controller;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +46,14 @@ public class WeChatAuthReturnController {
         WeChatAuthReturnDTO weChatAuthReturnDTO = JSON.parseObject(responseEntity.getBody(), WeChatAuthReturnDTO.class);
         log.debug("code请求返回：{}", responseEntity.getBody());
         int errorCode = weChatAuthReturnDTO.getErrcode();
+        System.out.println();
         if (0 != errorCode) {
             log.error("获取微信SEESION_KEY失败 errcode:{} errmsg:{}", weChatAuthReturnDTO.getErrcode(), weChatAuthReturnDTO.getErrmsg());
             return weChatAuthReturnDTO;
         } else {
-            redisTemplate.opsForValue().set(weChatAuthReturnDTO.getOpenid(), weChatAuthReturnDTO.getSessionKey());
+            redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenid()), weChatAuthReturnDTO);
             log.info("获取微信SEESION_KEY成功");
+            //返回token
             return weChatAuthReturnDTO;
         }
     }

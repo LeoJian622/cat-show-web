@@ -1,5 +1,6 @@
 spring:
   profiles:
-    active: dev
-server:
-  port: 8089
+    active: database,wechat,redis
+logging:
+  level:
+    root: debug
