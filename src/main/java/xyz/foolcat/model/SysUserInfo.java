@@ -1,8 +1,11 @@
 package xyz.foolcat.model;
 
+import lombok.Builder;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Builder
 public class SysUserInfo implements Serializable {
     /**
      *

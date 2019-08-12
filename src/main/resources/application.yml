@@ -1,6 +1,3 @@
 spring:
   profiles:
-    active: database,wechat,redis
-logging:
-  level:
-    root: debug
+    active: dev

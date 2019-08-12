@@ -2,8 +2,11 @@ package xyz.foolcat.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.Builder;
 import org.joda.money.Money;
 
+@Builder
 public class GoodsInfo implements Serializable {
     /**
      *

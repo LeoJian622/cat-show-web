@@ -13,6 +13,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
 import xyz.foolcat.dto.WeChatAuthDTO;
 import xyz.foolcat.dto.WeChatAuthReturnDTO;
+import xyz.foolcat.mapper.SysUserInfoMapper;
+import xyz.foolcat.model.SysUserInfo;
+import xyz.foolcat.service.SysUserInfoService;
+import xyz.foolcat.utils.JwtUtils;
 
 import java.net.URI;
 
@@ -27,14 +31,25 @@ import java.net.URI;
 @RequestMapping(value = "/wechat")
 public class WeChatAuthReturnController {
 
-    @Autowired
-    WeChatAuthenticateConfig weChatAuthenticateConfig;
+    private final WeChatAuthenticateConfig weChatAuthenticateConfig;
+
+    private final JwtUtils jwtUtils;
+
+    private final RestTemplate restTemplate;
+
+    private final RedisTemplate redisTemplate;
+
+    private final SysUserInfoService sysUserInfoService;
 
     @Autowired
-    RestTemplate restTemplate;
+    public WeChatAuthReturnController(WeChatAuthenticateConfig weChatAuthenticateConfig, JwtUtils jwtUtils,RestTemplate restTemplate, RedisTemplate redisTemplate, SysUserInfoService sysUserInfoService){
+        this.weChatAuthenticateConfig = weChatAuthenticateConfig;
+        this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
+        this.jwtUtils = jwtUtils;
+        this.sysUserInfoService = sysUserInfoService;
+    };
 
-    @Autowired
-    RedisTemplate redisTemplate;
 
     @RequestMapping(value = "/auth/{code}")
     public WeChatAuthReturnDTO authenticate(@PathVariable String code) throws Exception {
@@ -53,7 +68,12 @@ public class WeChatAuthReturnController {
         } else {
             redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenid()), weChatAuthReturnDTO);
             log.info("获取微信SEESION_KEY成功");
-            //返回token
+            SysUserInfo sysUserInfo = SysUserInfo.builder()
+                    .unionId(weChatAuthReturnDTO.getUnionId())
+                    .userIdentity(1)
+                    .build();
+            //生成token并返回
+
             return weChatAuthReturnDTO;
         }
     }

@@ -1,3 +1,8 @@
+server:
+  port: 8090
+logging:
+  level:
+    root: debug
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/foolcat
