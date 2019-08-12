@@ -68,10 +68,9 @@ public class WeChatAuthReturnController {
         } else {
             redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenid()), weChatAuthReturnDTO);
             log.info("获取微信SEESION_KEY成功");
-            SysUserInfo sysUserInfo = SysUserInfo.builder()
-                    .unionId(weChatAuthReturnDTO.getUnionId())
-                    .userIdentity(1)
-                    .build();
+            SysUserInfo sysUserInfo = new SysUserInfo()
+                    .withUnionId(weChatAuthReturnDTO.getUnionId())
+                    .withUserIdentity(1);
             //生成token并返回
 
             return weChatAuthReturnDTO;

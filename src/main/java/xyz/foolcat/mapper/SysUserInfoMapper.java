@@ -1,13 +1,13 @@
 package xyz.foolcat.mapper;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.session.RowBounds;
 import xyz.foolcat.model.SysUserInfo;
 import xyz.foolcat.model.SysUserInfoExample;
+
+import java.util.List;
 
 public interface SysUserInfoMapper {
     /**
