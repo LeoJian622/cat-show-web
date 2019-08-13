@@ -12,9 +12,14 @@ import lombok.Data;
 public class WeChatAuthDTO {
 
     /**
+     * 授权code
+     */
+    private String code;
+
+    /**
      * 密文数据
      */
-    private String authenticate;
+    private String encryptData;
 
     /**
      * 初始偏移量

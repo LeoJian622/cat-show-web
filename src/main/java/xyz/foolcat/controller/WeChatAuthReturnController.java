@@ -51,12 +51,12 @@ public class WeChatAuthReturnController {
     };
 
 
-    @RequestMapping(value = "/auth/{code}")
-    public String authenticate(@PathVariable String code) throws Exception {
+    @RequestMapping(value = "/authentication", method = RequestMethod.POST)
+    public String authenticate(@RequestBody WeChatAuthDTO weChatAuthDTO) throws Exception {
 
         URI url = UriComponentsBuilder.fromUriString(weChatAuthenticateConfig.getApiUrl()
                 + "/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code")
-                .build(weChatAuthenticateConfig.getAppId(), weChatAuthenticateConfig.getAppSecret(), code);
+                .build(weChatAuthenticateConfig.getAppId(), weChatAuthenticateConfig.getAppSecret(), weChatAuthDTO.getCode());
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         WeChatAuthReturnDTO weChatAuthReturnDTO = JSON.parseObject(responseEntity.getBody(), WeChatAuthReturnDTO.class);
@@ -83,9 +83,4 @@ public class WeChatAuthReturnController {
         }
     }
 
-    @RequestMapping(value = "/auth", method = RequestMethod.POST)
-    public String authenticate(@RequestBody WeChatAuthDTO weChatAuthDTO) throws Exception {
-
-        return "1";
-    }
 }
