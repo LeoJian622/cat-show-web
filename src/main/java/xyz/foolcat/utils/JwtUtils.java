@@ -4,10 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
-import xyz.foolcat.model.SysUserInfo;
+import xyz.foolcat.model.UserInfo;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -35,9 +34,9 @@ public class JwtUtils {
     private String SUBJECT = "API AUTHENTICATION";
     private String AUDIENCE = "WECHAT-MINI-PROGRAM";
 
-    public String generateToken(SysUserInfo sysUserInfo) {
+    public String generateToken(UserInfo userInfo) {
 
-        Algorithm algorithm = Algorithm.HMAC256(sysUserInfo.getUnionId());
+        Algorithm algorithm = Algorithm.HMAC256(userInfo.getUnionId());
 
         Date issuedAt = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -51,15 +50,15 @@ public class JwtUtils {
                 .withAudience(AUDIENCE)
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
-                .withClaim("id", DigestUtils.md5Hex(sysUserInfo.getUnionId()))
-                .withClaim("role", sysUserInfo.getUserIdentity())
+                .withClaim("id", DigestUtils.md5Hex(userInfo.getUnionId()))
+                .withClaim("role", userInfo.getUserIdentity())
                 .sign(algorithm);
         return token;
     }
 
-    public DecodedJWT verifierToken(SysUserInfo sysUserInfo, String token) {
+    public DecodedJWT verifierToken(UserInfo userInfo, String token) {
 
-        Algorithm algorithm = Algorithm.HMAC256(sysUserInfo.getUnionId());
+        Algorithm algorithm = Algorithm.HMAC256(userInfo.getUnionId());
         JWTVerifier jwtVerifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .withSubject(SUBJECT)

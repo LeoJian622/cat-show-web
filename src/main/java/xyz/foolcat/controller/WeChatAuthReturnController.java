@@ -2,8 +2,8 @@ package xyz.foolcat.controller;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +13,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
 import xyz.foolcat.dto.WeChatAuthDTO;
 import xyz.foolcat.dto.WeChatAuthReturnDTO;
-import xyz.foolcat.mapper.SysUserInfoMapper;
-import xyz.foolcat.model.SysUserInfo;
-import xyz.foolcat.service.SysUserInfoService;
+import xyz.foolcat.mapper.UserInfoMapper;
+import xyz.foolcat.model.UserInfo;
+import xyz.foolcat.service.UserInfoService;
 import xyz.foolcat.utils.JwtUtils;
 
 import java.net.URI;
@@ -39,20 +39,21 @@ public class WeChatAuthReturnController {
 
     private final RedisTemplate redisTemplate;
 
-    private final SysUserInfoService sysUserInfoService;
+    private final UserInfoService userInfoService;
 
     @Autowired
-    public WeChatAuthReturnController(WeChatAuthenticateConfig weChatAuthenticateConfig, JwtUtils jwtUtils,RestTemplate restTemplate, RedisTemplate redisTemplate, SysUserInfoService sysUserInfoService){
+    public WeChatAuthReturnController(WeChatAuthenticateConfig weChatAuthenticateConfig, JwtUtils jwtUtils, RestTemplate restTemplate, RedisTemplate redisTemplate, UserInfoService userInfoService){
         this.weChatAuthenticateConfig = weChatAuthenticateConfig;
         this.restTemplate = restTemplate;
         this.redisTemplate = redisTemplate;
         this.jwtUtils = jwtUtils;
-        this.sysUserInfoService = sysUserInfoService;
+        this.userInfoService = userInfoService;
     };
 
 
     @RequestMapping(value = "/auth/{code}")
-    public WeChatAuthReturnDTO authenticate(@PathVariable String code) throws Exception {
+    public String authenticate(@PathVariable String code) throws Exception {
+
         URI url = UriComponentsBuilder.fromUriString(weChatAuthenticateConfig.getApiUrl()
                 + "/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code")
                 .build(weChatAuthenticateConfig.getAppId(), weChatAuthenticateConfig.getAppSecret(), code);
@@ -64,16 +65,21 @@ public class WeChatAuthReturnController {
         System.out.println();
         if (0 != errorCode) {
             log.error("获取微信SEESION_KEY失败 errcode:{} errmsg:{}", weChatAuthReturnDTO.getErrcode(), weChatAuthReturnDTO.getErrmsg());
-            return weChatAuthReturnDTO;
+            return JSON.toJSONString(weChatAuthReturnDTO);
         } else {
-            redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenid()), weChatAuthReturnDTO);
+            redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenId()), weChatAuthReturnDTO);
             log.info("获取微信SEESION_KEY成功");
-            SysUserInfo sysUserInfo = new SysUserInfo()
-                    .withUnionId(weChatAuthReturnDTO.getUnionId())
-                    .withUserIdentity(1);
-            //生成token并返回
+            UserInfo userInfo = userInfoService.getByUnionId(weChatAuthReturnDTO.getOpenId());
 
-            return weChatAuthReturnDTO;
+            if (null == userInfo){
+                userInfo =  new UserInfo()
+                        .withUnionId(weChatAuthReturnDTO.getOpenId());
+                userInfoService.insert(userInfo);
+            }
+            //生成token并返回
+            String token = jwtUtils.generateToken(userInfo);
+            System.out.println(token);
+            return token;
         }
     }
 

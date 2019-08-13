@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class WeChatAuthReturnDTO{
 
-    private String openid;
+    private String openId;
 
     private String sessionKey;
 
