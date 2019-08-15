@@ -21,7 +21,7 @@ create table foolcat_shop_info
     shop_name                 varchar(36)  not null comment '商店名称',
     shop_background_image_url varchar(255) not null DEFAULT '' comment '商店背景图片地址',
     shop_portrait_url         varchar(255) not null DEFAULT '' comment '商店头像图片地址',
-    state                     int          not null DEFAULT '0' comment '商店状态',
+    state                     int          not null DEFAULT 0 comment '商店状态',
     shop_description          varchar(60)  not null DEFAULT '' comment '商店简介',
     create_time               timestamp    not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
     update_time               timestamp    not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',

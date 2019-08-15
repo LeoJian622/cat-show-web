@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://192.168.8.251:3306/foolcat
-    username: foolcat
-    password: M3efb4/rrwBvHdAcHj2m4ZesL5z1pCV4KI58xBpJtONTsIE8FSFFDqW8CFfXyvZ1wWBlwxHk9ECx8HWztJg0TQ==
+    url: jdbc:mysql://127.0.0.1:3306/foolcat
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       initial-size: 10
@@ -16,12 +16,12 @@ spring:
       test-while-idle: true
       connection-properties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIe39Fnk+94kl0yR1TYhnu7s5L9tM+7S0tJTzhMnKnw99BvR2lkKCUw6cmFPY59T/PqJ6aftbNQ34vnKhiLDPs8CAwEAAQ==
   redis:
-    host: 192.168.8.251
-    password: foolcat.123
+    host: 127.0.0.1
+    password:
     jedis:
       pool:
         max-active: 8
-        max-wait: 3000ms
+        max-wait: 300ms
         max-idle: 4
         min-idle: 2
     ssl: true
