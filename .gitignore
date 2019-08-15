@@ -31,3 +31,4 @@ build/
 /src/main/resources/application-wechat.yml
 /src/main/resources/application-database.yml
 /src/main/resources/application-redis.yml
+/src/main/resources/application-pro.yml
