@@ -70,7 +70,6 @@ public class WeChatAuthReturnController {
         } else {
 
             UserInfo userInfo = userInfoService.getByUnionId(weChatAuthReturnDTO.getOpenId());
-
             if (null == userInfo) {
                 /**
                  * 数据解密
@@ -79,7 +78,6 @@ public class WeChatAuthReturnController {
                 if (decryptdata == null) {
                     throw new LoginException("获取不到用户信息");
                 }
-
                 userInfo = JSON.parseObject(new String(decryptdata), UserInfo.class);
                 userInfoService.insert(userInfo);
             }

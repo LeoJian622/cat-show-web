@@ -1,9 +1,10 @@
 create table foolcat_sys_user_info
 (
     id            varchar(32)  not null comment '用户ID',
-    union_id      varchar(28)  not null comment '用户微信ID',
+    union_id      varchar(28)  not null DEFAULT '' comment '微信唯一ID',
+    open_id      varchar(28)  not null comment '微信开放ID',
     nick_name     varchar(36)  not null DEFAULT '' comment '昵称',
-    portrait_url  varchar(255) not null DEFAULT '' comment '头像地址',
+    avatar_url  varchar(255) not null DEFAULT '' comment '头像地址',
     user_identity int          not null DEFAULT 0 comment '用户类型',
     phone         varchar(11)  not null DEFAULT '' comment '电话',
     sex           varchar(8)   not null DEFAULT '' comment '性别',

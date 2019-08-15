@@ -24,7 +24,7 @@ spring:
     jedis:
       pool:
         max-active: 8
-        max-wait: 300ms
+        max-wait: 3000ms
         max-idle: 4
         min-idle: 2
 mybatis:
