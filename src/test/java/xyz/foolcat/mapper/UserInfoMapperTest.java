@@ -22,7 +22,7 @@ class UserInfoMapperTest {
                 .withUserIdentity(1)
                 .withNickName("test")
                 .withPhone("234")
-                .withPortraitUrl("http://asdasd.ad.asd/asd/asd")
+                .withAvatarUrl("http://asdasd.ad.asd/asd/asd")
                 .withSex("male")
 //                .withCreateTime(new Date())
                 .withUpdateTime(new Date());
