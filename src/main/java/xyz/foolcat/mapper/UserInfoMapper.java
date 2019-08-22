@@ -161,5 +161,21 @@ public interface UserInfoMapper {
             "where open_id = #{openId,jdbcType=VARCHAR}"
     })
     @ResultMap("xyz.foolcat.mapper.UserInfoMapper.BaseResultMap")
-    UserInfo selectByUnionId(String openId);
+    UserInfo selectByOpenId(String openId);
+
+    /**
+     * 通过unionId 查找用户信息
+     *
+     * @param unionId 微信开放ID
+     * @return UserInfo 对象 或 NULL
+     */
+    @Select({
+            "select",
+            "id, union_id, open_id, nick_name, avatar_url, user_identity, phone, sex, create_time, ",
+            "update_time",
+            "from foolcat_sys_user_info",
+            "where open_id = #{unionId,jdbcType=VARCHAR}"
+    })
+    @ResultMap("xyz.foolcat.mapper.UserInfoMapper.BaseResultMap")
+    UserInfo selectByUnionId(String unionId);
 }

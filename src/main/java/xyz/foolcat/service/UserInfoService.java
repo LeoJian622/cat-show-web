@@ -1,9 +1,7 @@
 package xyz.foolcat.service;
 
-import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.foolcat.mapper.UserInfoMapper;
 import xyz.foolcat.model.UserInfo;
 
@@ -30,6 +28,10 @@ public class UserInfoService {
 
     public UserInfo getByUnionId(String unionId) throws Exception{
         return userInfoMapper.selectByUnionId(unionId);
+    }
+
+    public UserInfo getByOpenId(String unionId) throws Exception{
+        return userInfoMapper.selectByOpenId(unionId);
     }
 
     public String insert(UserInfo userInfo) throws Exception{

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import xyz.foolcat.config.WeChatAuthenticateConfig;
+import xyz.foolcat.convert.UserInfoDTO2UserInfoConverter;
+import xyz.foolcat.dto.UserInfoDTO;
 import xyz.foolcat.dto.WeChatAuthDTO;
 import xyz.foolcat.dto.WeChatAuthReturnDTO;
 import xyz.foolcat.exception.LoginException;
@@ -69,20 +71,29 @@ public class WeChatAuthReturnController {
             return JSON.toJSONString(weChatAuthReturnDTO);
         } else {
 
-            UserInfo userInfo = userInfoService.getByUnionId(weChatAuthReturnDTO.getOpenId());
+            UserInfo userInfo = userInfoService.getByOpenId(weChatAuthReturnDTO.getOpenId());
             if (null == userInfo) {
                 /**
                  * 数据解密
                  */
-                byte[] decryptdata = AesEncryptUtils.decrypt(weChatAuthDTO.getEncryptData(), weChatAuthReturnDTO.getSessionKey(), weChatAuthDTO.getIv());
+                byte[] decryptdata = AesEncryptUtils.decrypt(weChatAuthDTO.getEncryptedData(), weChatAuthReturnDTO.getSessionKey(), weChatAuthDTO.getIv());
                 if (decryptdata == null) {
                     throw new LoginException("获取不到用户信息");
                 }
-                userInfo = JSON.parseObject(new String(decryptdata), UserInfo.class);
+                UserInfoDTO userInfoDTO = JSON.parseObject(new String(decryptdata), UserInfoDTO.class);
+                log.debug("userInfoDTO: {}", userInfoDTO);
+                userInfo = UserInfoDTO2UserInfoConverter.convert(userInfoDTO);
+                log.debug("userInfo: {}", userInfo);
                 userInfoService.insert(userInfo);
             }
-
-            redisTemplate.opsForValue().set(DigestUtils.md5Hex(weChatAuthReturnDTO.getOpenId()), weChatAuthReturnDTO);
+            if (!redisTemplate.hasKey(DigestUtils.md5Hex(userInfo.getOpenId()))) {
+                redisTemplate.opsForValue().set(DigestUtils.md5Hex(userInfo.getOpenId()), weChatAuthReturnDTO);
+            } else {
+                String olderSessionKey = ((WeChatAuthReturnDTO) redisTemplate.opsForValue().get(DigestUtils.md5Hex(userInfo.getOpenId()))).getSessionKey();
+                if (!weChatAuthReturnDTO.getSessionKey().equals(olderSessionKey)) {
+                    redisTemplate.opsForValue().set(DigestUtils.md5Hex(userInfo.getOpenId()),weChatAuthReturnDTO);
+                }
+            }
             log.info("获取微信SEESION_KEY成功");
 
             //生成token并返回

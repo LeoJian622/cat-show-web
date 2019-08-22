@@ -36,7 +36,7 @@ public class JwtUtils {
 
     public String generateToken(UserInfo userInfo) {
 
-        Algorithm algorithm = Algorithm.HMAC256(userInfo.getUnionId());
+        Algorithm algorithm = Algorithm.HMAC256(userInfo.getOpenId());
 
         Date issuedAt = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -50,7 +50,7 @@ public class JwtUtils {
                 .withAudience(AUDIENCE)
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
-                .withClaim("id", DigestUtils.md5Hex(userInfo.getUnionId()))
+                .withClaim("id", DigestUtils.md5Hex(userInfo.getOpenId()))
                 .withClaim("role", userInfo.getUserIdentity())
                 .sign(algorithm);
         return token;
@@ -58,7 +58,7 @@ public class JwtUtils {
 
     public DecodedJWT verifierToken(UserInfo userInfo, String token) {
 
-        Algorithm algorithm = Algorithm.HMAC256(userInfo.getUnionId());
+        Algorithm algorithm = Algorithm.HMAC256(userInfo.getOpenId());
         JWTVerifier jwtVerifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .withSubject(SUBJECT)

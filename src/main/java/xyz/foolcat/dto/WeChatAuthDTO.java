@@ -19,7 +19,7 @@ public class WeChatAuthDTO {
     /**
      * 密文数据
      */
-    private String encryptData;
+    private String encryptedData;
 
     /**
      * 初始偏移量
